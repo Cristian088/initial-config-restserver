@@ -1,7 +1,11 @@
 const { Router } = require("express");
 const { check } = require("express-validator");
 
-const { fieldsValidate } = require("../middlewares/fieldsValidate");
+
+const { fieldsValidate, 
+        validateJwt, 
+        validByRol } = require('../middlewares')
+
 const { roleValidate, emailValidExist, userValidExist } = require("../helpers/fieldsValidateDb");
 
 const { usersGet, 
@@ -35,6 +39,8 @@ router.put("/:idUser", [
 
 //PETICIÓN DELETE
 router.delete("/:idUser", [
+    validateJwt,
+    validByRol('SUPER_ROL', 'ADMIN_ROL'),
     check('idUser', 'No es un ID válido para mongo').isMongoId(),
     check('idUser').custom( userValidExist ),
     fieldsValidate
