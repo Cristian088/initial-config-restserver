@@ -3,6 +3,7 @@ const bcrypt = require("bcryptjs");
 
 const User = require("../models/userModel");
 const { generateJwt } = require("../helpers/generate-jwt");
+const { googleVerify } = require("../helpers/google-verify");
 
 const authLoginPost = async(req = request, res=response) => {
 
@@ -54,6 +55,57 @@ const authLoginPost = async(req = request, res=response) => {
 }
 
 
+const authGooglenPost = async( req = request, res=response ) => {
+
+    const { idToken } = req.body;
+
+    try {
+        
+        const { name, img, email } = await googleVerify( idToken );
+
+        let user = await User.findOne({ email })
+
+        if ( !user ) {
+           const dataUser = {
+            name, 
+            img, 
+            email,
+            password: ':P',
+            google: true,
+            rol: 'USER_ROL'
+           };
+
+           user = new User( dataUser );
+           await user.save();
+        }
+
+        if ( !user.state ) {
+            res.status(401).json({
+                msg: 'Hable con el administrador, Usuario Inactivo'
+            })
+        }
+
+        const token = await generateJwt( user.id );
+
+
+        res.status(200).json({
+            user,
+            token
+        });
+        
+    } catch (error) {
+        
+        console.log(error);
+        return res.status(400).json({
+            ok: false,
+            msg: 'El token no se pudo verificar'
+        });
+    }
+    
+}
+
+
 module.exports = {
-    authLoginPost 
+    authLoginPost,
+    authGooglenPost
 }
