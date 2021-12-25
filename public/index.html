@@ -37,7 +37,12 @@
           
           const body = { idToken: response.credential}
 
-          fetch('http://localhost:3000/api/auth/google', {
+          const url = (window.location.hostname.includes('localhost'))
+                      ? 'http://localhost:3000/api/auth/google' 
+                      : 'https://restserver-node-initial.herokuapp.com/api/auth/google'
+
+
+          fetch( url , {
             method: 'POST',
             headers: {
               'Content-Type': 'application/json'
