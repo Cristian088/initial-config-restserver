@@ -1,5 +1,4 @@
-const Role = require('../models/roleModel');
-const Users = require('../models/userModel');
+const { Category, Users, Role, Product } = require("../models");
 
  const roleValidate = async( rol = '' ) => {
 
@@ -29,8 +28,41 @@ const userValidExist = async( idUser ) => {
 }
 
 
+const categoryValidExist = async( name = '') => {
+ 
+    name = name.toUpperCase();
+    
+    const categoryExist = await Category.findOne({ name });
+
+    if ( categoryExist ) {
+        throw new Error (`La categoria ${ categoryExist.name } ya esta registrada`);
+    }
+}
+
+const categoryValidExistById = async( idCategory ) => {
+
+    const existCategory = await Category.findById( idCategory );
+
+    if ( !existCategory ) {
+        throw new Error(`La categoria con el id ${idCategory}, no esta registrado.`);
+    }
+}
+
+const productValidExistById = async( idProduct ) => {
+
+    const existProduct = await Product.findById( idProduct );
+
+    if ( !existProduct ) {
+        throw new Error(`La categoria con el id ${idProduct}, no esta registrado.`);
+    }
+}
+
+
 module.exports = {
     roleValidate,
     emailValidExist,
-    userValidExist
+    userValidExist,
+    categoryValidExist,
+    categoryValidExistById,
+    productValidExistById
 } 
