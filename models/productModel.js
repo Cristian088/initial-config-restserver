@@ -38,7 +38,9 @@ const productSchema = Schema({
     disposable:{
         type: Boolean,
         default: true
-    }
+    },
+
+    img:{ type: String }
 
 });
 

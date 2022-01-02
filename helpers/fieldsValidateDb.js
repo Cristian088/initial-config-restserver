@@ -57,6 +57,23 @@ const productValidExistById = async( idProduct ) => {
     }
 }
 
+/**
+ * Validar las collecciones permitidas
+ * @param {*} collection 
+ * @param {*} collectionPermit 
+ */
+const collectionPermit = async ( collection = '' , collections = []) =>{
+
+    if ( !collections.includes(collection) ) {
+
+        throw new Error(`La coleccion ${collection}, no es permitida. - ${collections}`);
+    
+    }
+
+    return true;
+
+}
+
 
 module.exports = {
     roleValidate,
@@ -64,5 +81,6 @@ module.exports = {
     userValidExist,
     categoryValidExist,
     categoryValidExistById,
-    productValidExistById
+    productValidExistById,
+    collectionPermit
 } 
